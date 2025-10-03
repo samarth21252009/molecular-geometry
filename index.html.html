@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chemistry Hybridisation & Geometry Tool</title>
+  <script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f8fb;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 { color: blue; }
+    input {
+      padding: 10px;
+      font-size: 18px;
+      width: 250px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 28px;
+      margin-left: 20px;
+      cursor: pointer;
+      color:red;
+      background-color:yellow;
+      font-weight:900;
+    }
+    .result {
+      margin-top: 250px;
+      font-size: 40px;
+      color: blue;
+      border: 10px solid #2a4d69;
+      border-radius: 10px;
+      padding: 30px;
+      display: inline-block;
+      background: pink;
+      min-width: 320px;
+    }
+  </style>
+</head>
+<body>
+<marquee><h1 style="background-color:red;color:yellow">PREPARED BY: शैलेश  पटवा  (राजकीय  प्रवक्ता  रसायन विज्ञान  )</h1></marquee>
+<center><h1 style="border-style:dashed">PT. D.D.U. GOVT. MODEL INTER COLLEGE</h1></center>
+  <h1>Molecular Geometry & Hybridisation Finder</h1>
+  <p>Enter molecular formula (e.g. CH4, BF3, NH3, H2O, CO2, SF6, XeF4):</p>
+  <input type="text" id="formula" placeholder="Enter Formula">
+  <button onclick="findMolecule()">FIND GEOMETRY</button>
+  
+  <div class="result" id="output"></div>
+  <div id="viewer"></div>
+
+  <script>
+    function findMolecule() {
+      let formula = document.getElementById("formula").value.toUpperCase();
+      let output = document.getElementById("output");
+      let element = document.getElementById("viewer");
+      element.innerHTML = ""; // reset viewer
+      let viewer = $3Dmol.createViewer(element, {backgroundColor:"yellow"});
+
+      // Expanded dataset
+      let data = {
+        "CH4": {hybrid: "sp³", geometry: "Tetrahedral", shape: "Tetrahedral", model: "https://files.rcsb.org/ligands/CH4/CH4_ideal.sdf"},
+        "NH3": {hybrid: "sp³", geometry: "Tetrahedral", shape: "Trigonal Pyramidal", model: "https://files.rcsb.org/ligands/NH3/NH3_ideal.sdf"},
+        "H2O": {hybrid: "sp³", geometry: "Tetrahedral", shape: "Bent (V-shaped)", model: "https://files.rcsb.org/ligands/H2O/H2O_ideal.sdf"},
+        "CO2": {hybrid: "sp", geometry: "Linear", shape: "Linear", model: "https://files.rcsb.org/ligands/CO2/CO2_ideal.sdf"},
+        "BECL2": {hybrid: "sp", geometry: "Linear", shape: "Linear", model: "https://files.rcsb.org/ligands/BCL/BCL_ideal.sdf"},
+        "BF3": {hybrid: "sp²", geometry: "Trigonal Planar", shape: "Trigonal Planar", model: "https://files.rcsb.org/ligands/BF3/BF3_ideal.sdf"},
+        "SO2": {hybrid: "sp²", geometry: "Trigonal Planar", shape: "Bent", model: "https://files.rcsb.org/ligands/SO2/SO2_ideal.sdf"},
+        "NO2": {hybrid: "sp²", geometry: "Trigonal Planar", shape: "Bent/Angular", model: "https://files.rcsb.org/ligands/NO2/NO2_ideal.sdf"},
+        "PCL5": {hybrid: "sp³d", geometry: "Trigonal Bipyramidal", shape: "Trigonal Bipyramidal", model: "https://files.rcsb.org/ligands/PCL/PCL_ideal.sdf"},
+        "SF4": {hybrid: "sp³d", geometry: "Trigonal Bipyramidal", shape: "See-Saw", model: "https://files.rcsb.org/ligands/SF4/SF4_ideal.sdf"},
+        "CLF3": {hybrid: "sp³d", geometry: "Trigonal Bipyramidal", shape: "T-shaped", model: "https://files.rcsb.org/ligands/CLF/CLF_ideal.sdf"},
+        "SF6": {hybrid: "sp³d²", geometry: "Octahedral", shape: "Octahedral", model: "https://files.rcsb.org/ligands/SF6/SF6_ideal.sdf"},
+        "XEF4": {hybrid: "sp³d²", geometry: "Octahedral", shape: "Square Planar", model: "https://files.rcsb.org/ligands/XEF/XEF_ideal.sdf"},
+        "XEF2": {hybrid: "sp³d³", geometry: "Trigonal Bipyramidal (expanded)", shape: "Linear", model: "https://files.rcsb.org/ligands/XEF/XEF_ideal.sdf"},
+        "BRF5": {hybrid: "sp³d²", geometry: "Octahedral", shape: "Square Pyramidal", model: "https://files.rcsb.org/ligands/BRF/BRF_ideal.sdf"},
+        "NH4+": {hybrid: "sp³", geometry: "Tetrahedral", shape: "Tetrahedral", model: "https://files.rcsb.org/ligands/NH4/NH4_ideal.sdf"}
+      };
+
+      if(data[formula]) {
+        output.innerHTML = `
+          <b>Formula:</b> ${formula}<br>
+          <b>Hybridisation:</b> ${data[formula].hybrid}<br>
+          <b>Geometry:</b> ${data[formula].geometry}<br>
+          <b>Molecular Structure:</b> ${data[formula].shape}
+        `;
+
+        // load 3D model
+        jQuery.ajax(data[formula].model, {
+          success: function(ret) {
+            viewer.addModel(ret, "sdf");
+            viewer.setStyle({}, {stick:{}, sphere:{scale:0.3}});
+            viewer.zoomTo();
+            viewer.render();
+          },
+          error: function() {
+            output.innerHTML += "<br><i></i>";
+          }
+        });
+
+      } else {
+        output.innerHTML = "❌ Sorry, data not available for " + formula;
+      }
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
